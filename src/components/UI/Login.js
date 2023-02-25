@@ -9,7 +9,7 @@ import "./Login.css";
 
 const Login = () => {
 
-  const navigate = useNavigate()
+  const history = useNavigate()
   const [login, setLogin] = useState(false);
   const inputEmailRef = useRef()
   const inputPasswordRef = useRef()
@@ -55,7 +55,7 @@ const Login = () => {
                 alert("sign up successfully")
             }else{
                 alert("Login SuccessFully")
-                navigate("/home")
+                history("/home")
 
             }
         }else{
