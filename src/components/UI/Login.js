@@ -1,100 +1,128 @@
 import React, { useState ,useRef} from "react";
-
 import { useNavigate } from "react-router-dom";
-
+import { authActions } from "../store/Auth-slice";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-
 import "./Login.css";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
+  console.log("insideAuth");
+  const [isLogin, setIsLogin] = useState(true);
+  const [isLoading, setisLoading] = useState();
+  const emailInputref = useRef();
+  const passwordInputref = useRef();
+  const inputConfirmPasswordRef= useRef();
+  const navigate = useNavigate();
 
-  const history = useNavigate()
-  const [login, setLogin] = useState(false);
-  const inputEmailRef = useRef()
-  const inputPasswordRef = useRef()
-  const inputConfirmPasswordRef = useRef()
-  const loginSwappingHandler = () => {
-    setLogin((prev) => !prev);
+  const [loginState, setlogingState] = useState(false);
+  const dispatch = useDispatch();
+
+  const switchAuthModeHandler = () => {
+    setIsLogin((prevState) => !prevState);
   };
-  const loginHandler = async(event) => {
+
+  const submitHandler = async(event) => {
     event.preventDefault();
+
+    const enteredEmail = emailInputref.current.value;
+    const enteredPassword = passwordInputref.current.value;
+    const confirmPassword = inputConfirmPasswordRef.current.value;
+
+    //validation
+    setisLoading(true);
+  
     let url
-    if (!login) {
+    if (!isLogin) {
       url =
         "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDRorahRJ_juKatl8aQXmkip1wxxy28S84";
     } else {
       url =
         "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDRorahRJ_juKatl8aQXmkip1wxxy28S84";
     }
-    if(!login){
-        if(inputPasswordRef.current.value !== inputConfirmPasswordRef.current.value){
-            return
-        }
-    }
-    try{
-        const res = await fetch(url ,{
-            method : "POST",
-            body :JSON.stringify({
-                email: inputEmailRef.current.value,
-                password : inputPasswordRef.current.value
-            }),
-            headers :{
-                 'Content-type':'application/json'
-            }  
-        })
-        if(res.ok){
-            const data = await res.json();
-            console.log(data)
-            localStorage.setItem('idToken',data.idToken)
-            localStorage.setItem('email',data.email)
-            inputEmailRef.current.value=""
-            inputPasswordRef.current.value=""
-            if(!login){
-                inputConfirmPasswordRef.current.value=""
-                alert("sign up successfully")
-            }else{
-                alert("Login SuccessFully")
-                history("/home")
+    if(!isLogin){
+      if(enteredPassword === confirmPassword){
+        return  }
+      }
+  try{
+    const res = await fetch(url ,{
+      method : "POST",
+      body :JSON.stringify({
+          email: enteredEmail,
+          password : enteredPassword
+      }),
+      headers :{
+           'Content-type':'application/json'
+      }  
+  })
+  if(res.ok){
+      const data = await res.json();
+      console.log(data)
+      localStorage.setItem('idToken',data.idToken)
+      localStorage.setItem('email',data.email)
+      emailInputref.current.value=""
+      passwordInputref.current.value=""
+      inputConfirmPasswordRef.current.value=''
+      if(!isLogin){
+          inputConfirmPasswordRef.current.value=""
+          alert("sign up successfully")
+      }else{
+          alert("Login SuccessFully")
+          navigate("/mail");
+          dispatch(authActions.login(data.idToken))
+          localStorage.setItem("token", data.idToken);
+          localStorage.setItem("Email", data.email);
+        
 
-            }
-        }else{
-          const data = await res.json;
-          throw data.error
-        }
-    }catch(error){
-        console.log(error.message)
-    }
-  };
+      }
+  }else{
+    let error = "authentication failed"
+    throw new Error(error)
+  }
+}catch(error){
+  console.log(error.message)
+  alert(error.message)
+}
+};
+
   return (
     <div className="login-main" >
-      <Form onSubmit={loginHandler}>
-        <h2>{login ? "Login" : "Sign Up"}</h2>
+      <Form onSubmit={submitHandler}>
+        <h2>{isLogin ? "Login" : "Sign Up"}</h2>
         <Form.Group className="mb-3" htmlFor="email">
           <Form.Label>Email address</Form.Label>
-          <Form.Control ref={inputEmailRef} id="email" type="email" placeholder="Enter email" />
+          <Form.Control ref={emailInputref} id="email" type="email" placeholder="Enter email" />
         </Form.Group>
         <Form.Group className="mb-3" htmlFor="password">
           <Form.Label>Password</Form.Label>
-          <Form.Control ref={inputPasswordRef} id="password" type="password" placeholder="Password" />
-        </Form.Group>
-        {!login && (
+          <Form.Control ref={passwordInputref} id="password" type="password" placeholder="Password" />
           <Form.Group className="mb-3" htmlFor="confirm-password">
             <Form.Label >Confirm Password</Form.Label>
             <Form.Control
               id="confirm-password"
               type="password"
               placeholder="Confirm Password"
-              ref={inputConfirmPasswordRef}
+              ref={inputConfirmPasswordRef} required
             />
           </Form.Group>
-        )}
+        </Form.Group>
+        {/* {!isLogin && (
+          <Form.Group className="mb-3" htmlFor="confirm-password">
+            <Form.Label >Confirm Password</Form.Label>
+            <Form.Control
+              id="confirm-password"
+              type="password"
+              placeholder="Confirm Password"
+              ref={inputConfirmPasswordRef} required
+            />
+          </Form.Group>
+        )} */}
         <Button variant="primary" type="submit" >
-          {login ? "Login" : "Sign In"}
+          {isLogin ? "Login" : "SignUP"}
         </Button>
       </Form>
       <Button
-        onClick={loginSwappingHandler}
+        onClick={switchAuthModeHandler}
         style={{
           
           fontWeight: "bold",
@@ -104,7 +132,7 @@ const Login = () => {
         }}
         variant="success"
       >
-        {login ? "Click Here To Sign In" : "Click Here to Log In"}
+        {isLogin ? "Click Here To SignUp" : "Click Here to Log In"}
       </Button>
     </div>
   );
