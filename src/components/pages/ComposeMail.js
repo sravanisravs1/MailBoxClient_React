@@ -48,7 +48,7 @@ function Mailfirst() {
     };
 
     fetch(
-      `https://reacthttp-37efe-default-rtdb.firebaseio.com/${receivedEmail}.json`,
+      `https://reacthttp-37efe-default-rtdb.firebaseio.com/${receivedEmail}/received.json`,
       {
         method: "POST",
         body: JSON.stringify({
@@ -60,6 +60,15 @@ function Mailfirst() {
       }
     ).then(async (res) => {
       const data = await res.json();
+      fetch(
+        `https://reacthttp-37efe-default-rtdb.firebaseio.com/${receivedEmail}/received.json`,
+        {
+          method: "PATCH",
+          body: JSON.stringify({
+            id: data.name,
+          }),
+        }
+      );
 
       dispatch(
         emailActions.recievedEmail({
@@ -72,7 +81,7 @@ function Mailfirst() {
     });
 
     fetch(
-      `https://https://reacthttp-37efe-default-rtdb.firebaseio.com/sent/${emailSender}.json`,
+      `https://https://reacthttp-37efe-default-rtdb.firebaseio.com/${emailSender}/sent.json`,
       {
         method: "POST",
         body: JSON.stringify({
@@ -84,6 +93,15 @@ function Mailfirst() {
       }
     ).then(async (res) => {
       const data = await res.json();
+      fetch(
+        `https://reacthttp-37efe-default-rtdb.firebaseio.com/${emailSender}/sent.json`,
+        {
+          method: "PATCH",
+          body: JSON.stringify({
+            id: data.name,
+          }),
+        }
+      );
       dispatch(
         emailActions.sentBox({
           id: data.name,
