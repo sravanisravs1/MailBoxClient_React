@@ -6,7 +6,7 @@ import { Routes, Route } from "react-router-dom";
 
 import InboxEmail from "./components/pages/Inbox";
 
-import MailData from "./components/Mail/MailData";
+import SentEmail from "./components/Mail/SentEmail";
 import MainNavigation from "./components/Layout/MainNavigation";
 import ComposeEmail from "./components/pages/ComposeMail";
 import MailPage from "./components/Mail/MailPage";
@@ -25,15 +25,15 @@ function App() {
       <Route path="/home"element={<Home/>}>
        
       </Route>
-      <Route path='/inbox/*' element={<InboxEmail/>}>
-        </Route>
+      <Route path='/inbox' element={<InboxEmail/>}/>
+      <Route path="/sent" element={<SentEmail />} />
       
       <Route path="/compose"
         element={<ComposeEmail/>} >
       </Route>
-      <Route path='/:id' element={<MailPage/>}>
+      <Route path='inbox/:id' element={<MailPage/>}/>
 
-      </Route>
+      <Route path="/sent/:id" element={<MailPage />} />
       </Routes>
       
     
