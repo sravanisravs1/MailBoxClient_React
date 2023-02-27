@@ -31,7 +31,7 @@ function App() {
       <Route path="/compose"
         element={<ComposeEmail/>} >
       </Route>
-      <Route path='inbox/:id' element={<MailPage/>}/>
+      <Route path='/:id' element={<MailPage/>}/>
 
       <Route path="/sent/:id" element={<MailPage />} />
       </Routes>
