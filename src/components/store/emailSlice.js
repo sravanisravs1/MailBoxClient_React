@@ -1,38 +1,26 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const emailSlice = createSlice({
-  name: "email",
-  initialState: {
-    recievedEmails: [],
-    sentEmails: [],
-    unread: 0,
-    email:
-      localStorage.getItem("email")?.replace(".", "")?.replace("@", "") || "",
-  },
-  reducers: {
-    recievedEmail(state, action) {
-      const newEmail = action.payload;
-
-      state.recievedEmails.push({
-        id: newEmail.id,
-        from: newEmail.from,
-        subject: newEmail.subject,
-        message: newEmail.message,
-
-      });
-    },
-    sentBox(state, action) {
-      const sentEmail = action.payload;
-
-      state.sentEmails.push({
-        id: sentEmail.id,
-        to: sentEmail.to,
-        subject: sentEmail.subject,
-        message: sentEmail.message,
-      });
-    },
-  },
+const initialState ={mailData :[], firstTime : true , unReadMessage:0 }
+const mailSlice =createSlice({
+    name : 'mail',
+    initialState,
+    reducers :{
+        firstTime(state , action){
+            state.firstTime = action.payload
+        },
+        replace(state , action){
+            state.mailData = action.payload.mailData
+            state.firstTime = false
+            state.unReadMessage = action.payload.unReadMessage
+        },
+        add(state , action){
+            state.mailData =[action.payload , ...state.mailData]
+        },
+        remove(state , action){
+            state.mailData = state.mailData.filter(mail=>mail.id!==action.payload.id)
+        }
+    }
 });
 
-export const emailActions = emailSlice.actions;
-export default emailSlice;
+export const mailAction = mailSlice.actions
+export default mailSlice.reducer

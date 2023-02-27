@@ -3,35 +3,40 @@ import "./App.css";
 import Login from "./components/UI/Login";
 
 import { Routes, Route } from "react-router-dom";
-import Mailfirst from "./components/pages/ComposeMail";
-import Inbox from "./components/pages/Inbox";
-import MailDetails from "./components/Mail/MailDetails";
+
+import InboxEmail from "./components/pages/Inbox";
+
+import MailData from "./components/Mail/MailData";
+import MainNavigation from "./components/Layout/MainNavigation";
+import ComposeEmail from "./components/pages/ComposeMail";
+import MailPage from "./components/Mail/MailPage";
+import Home from "./components/pages/Home";
 
 function App() {
   return (
     <Fragment>
 
-      <main>
+      <MainNavigation/>
       
       <Routes>
       <Route path="/" element={<Login/>}>
         
       </Route>
-      <Route path="/auth"element={<Login />}>
+      <Route path="/home"element={<Home/>}>
        
       </Route>
-      <Route path='/inbox' element={<Inbox/>}>
+      <Route path='/inbox/*' element={<InboxEmail/>}>
         </Route>
       
-      <Route path="/mail"
-        element={<Mailfirst />} >
+      <Route path="/compose"
+        element={<ComposeEmail/>} >
       </Route>
-      <Route path='/inbox/details' element={<MailDetails/>}>
+      <Route path='/:id' element={<MailPage/>}>
 
       </Route>
       </Routes>
       
-    </main>
+    
     </Fragment>
   );
 }

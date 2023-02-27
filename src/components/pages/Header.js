@@ -6,7 +6,7 @@ const Header = () => {
   return (
     <Nav fill variant="tabs" defaultActiveKey="/home">
       <Nav.Item>
-        <Nav.Link href="/mail">ComposeMail</Nav.Link>
+        <Nav.Link href="/compose">ComposeMail</Nav.Link>
       </Nav.Item>
       <Nav.Item>
         <Nav.Link href="/inbox" eventKey="link-1">

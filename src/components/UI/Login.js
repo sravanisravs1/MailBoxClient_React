@@ -1,6 +1,6 @@
 import React, { useState ,useRef} from "react";
 import { useNavigate } from "react-router-dom";
-import { authActions } from "../store/Auth-slice";
+import { authAction } from "../store/Auth-slice";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import "./Login.css";
@@ -68,10 +68,10 @@ const Login = () => {
           alert("sign up successfully")
       }else{
           alert("Login SuccessFully")
-          navigate("/mail");
-          dispatch(authActions.login(data.idToken))
+          navigate("/compose");
+          dispatch(authAction.login(data.idToken))
           localStorage.setItem("token", data.idToken);
-          localStorage.setItem("Email", data.email);
+          localStorage.setItem("email", data.email);
         
 
       }
