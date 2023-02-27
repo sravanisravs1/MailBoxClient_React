@@ -63,7 +63,7 @@ export const replacemail=(emailUrl , loggedUserEmail )=>{
                 for(let key in data){
                     mailData =[{id:key , ...data[key]} , ...mailData]
                     if(data[key].to === loggedUserEmail && data[key].read === false){
-                        unReadMessage ++
+                        unReadMessage = unReadMessage ++
                     }
                 }
 
@@ -82,5 +82,27 @@ export const replacemail=(emailUrl , loggedUserEmail )=>{
         }catch(error){
             console.log(error.message)
         }
+    }
+    
+}
+
+export const deleteMail=(mail)=>{
+    const userEmail = localStorage.getItem('email')
+    const emailUrl = userEmail.replace("@","").replace(".","")
+    return async (dispatch)=>{
+         try{
+           const res = await fetch(`https://reacthttp-37efe-default-rtdb.firebaseio.com/${emailUrl}/${mail.id}.json`,
+           {
+            method :"DELETE"
+           })
+            console.log(res)
+          // const data = await res.json()
+
+            dispatch(mailAction.remove(mail))
+
+
+         }catch(error){
+            console.log(error.message)
+         }
     }
 }
